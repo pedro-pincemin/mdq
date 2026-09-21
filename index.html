@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060a13">
+<title>Mis finanzas · Ahorro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  --bg:#060a13;
+  --glass:rgba(255,255,255,.055);
+  --glass-2:rgba(255,255,255,.09);
+  --stroke:rgba(255,255,255,.12);
+  --text:#eef2ff;
+  --muted:#93a0bd;
+  --soft:#b9c6ff;
+  --cyan:#19c6ff;
+  --violet:#7b61ff;
+  --green:#22e58b;
+  --red:#ff5c7a;
+  --amber:#ffb84d;
+  --font-display:'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body:'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+html{ scroll-padding-top: env(safe-area-inset-top, 0px); height:100%; }
+*,*::before,*::after{ box-sizing:inherit; }
+[hidden]{ display:none !important; }
+body{
+  margin:0; min-height:100%;
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-body); font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.bg{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60% 40% at 15% 8%, rgba(25,120,255,.28), transparent 70%),
+    radial-gradient(50% 35% at 95% 30%, rgba(123,97,255,.22), transparent 70%),
+    radial-gradient(60% 40% at 50% 100%, rgba(25,198,255,.16), transparent 70%),
+    linear-gradient(180deg,#07101f 0%, #060a13 60%);
+}
+.app{
+  position:relative; z-index:1;
+  width:100%; max-width:480px; margin:0 auto;
+  padding:18px 16px 130px;
+}
+button{ font-family:inherit; color:inherit; }
+.ic{ display:block; flex:none; }
+
+/* Header */
+.top{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+.top > div{ min-width:0; }
+.greet{ margin:0; color:var(--muted); font-size:13.5px; }
+h1{ margin:2px 0 0; font:600 24px/1.15 var(--font-display); letter-spacing:-.01em; }
+.pill{
+  display:flex; align-items:center; gap:8px; flex:none; max-width:55%;
+  padding:8px 12px; border-radius:16px;
+  background:var(--glass-2); border:1px solid var(--stroke);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+}
+.pill .ic{ color:var(--green); }
+.pill b{ display:block; font:600 14px/1.1 var(--font-display); color:var(--green); }
+.pill small{ display:block; font-size:11px; color:var(--muted); }
+
+/* Cards */
+.stack{ display:grid; gap:14px; }
+.card{
+  background:var(--glass); border:1px solid var(--stroke); border-radius:22px; padding:18px;
+  backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  min-width:0;
+}
+.card-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+h2{ margin:0; font:600 16px/1.2 var(--font-display); }
+.sub{ color:var(--muted); font-size:12.5px; overflow-wrap:anywhere; }
+.lbl{ color:var(--muted); font-size:12.5px; margin:0; }
+
+/* Hero */
+.hero{
+  position:relative; overflow:hidden; border-radius:26px; padding:22px 20px 18px;
+  background:linear-gradient(135deg,#0a56ee 0%, #4c52d9 55%, #7a5bc8 100%);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 20px 50px rgba(20,60,200,.35), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.hero::before{
+  content:""; position:absolute; width:220px; height:220px; right:-70px; top:-90px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.28), transparent 70%);
+}
+.hero > *{ position:relative; }
+.hero .lbl{ color:rgba(255,255,255,.75); }
+.hero-num{ display:block; font:700 40px/1.15 var(--font-display); letter-spacing:-.02em; margin:6px 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
+.hero-pot{ margin:0 0 14px; font-size:13px; color:rgba(255,255,255,.8); overflow-wrap:anywhere; }
+.hero-pot b{ font-family:var(--font-display); font-weight:600; color:#fff; }
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{
+  display:inline-block; max-width:100%; padding:5px 11px; border-radius:10px;
+  background:rgba(255,255,255,.2); font-size:12.5px; font-weight:500; overflow-wrap:anywhere;
+}
+.chip.ghost{ background:rgba(0,0,0,.2); }
+
+/* Forms */
+.field{ display:grid; gap:6px; margin-bottom:12px; min-width:0; }
+.field label{ font-size:12.5px; color:var(--muted); }
+input{
+  width:100%; min-width:0; padding:12px 14px; border-radius:14px;
+  background:rgba(255,255,255,.06); border:1px solid var(--stroke);
+  color:var(--text); font:inherit; font-size:16px;
+}
+input::placeholder{ color:rgba(147,160,189,.6); }
+input:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+input[type=date]{ color-scheme:dark; }
+.err{ min-height:0; margin:-4px 0 8px; font-size:12.5px; color:var(--red); }
+.err:empty{ display:none; }
+.row{ display:flex; gap:10px; flex-wrap:wrap; }
+.row > *{ flex:1 1 120px; }
+.two{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+.btn{
+  min-height:46px; padding:11px 16px; border-radius:14px; border:0; cursor:pointer;
+  font:600 15px var(--font-display); transition:transform .12s, filter .12s;
+}
+.btn:active{ transform:scale(.98); }
+.btn.primary{ background:linear-gradient(135deg,var(--cyan),var(--violet)); color:#04101f; }
+.btn.ghost{ background:rgba(255,255,255,.07); border:1px solid var(--stroke); color:var(--text); }
+.btn.small{ min-height:38px; padding:8px 12px; font-size:13.5px; }
+.link{
+  background:none; border:0; padding:6px 0; cursor:pointer; font:500 13px var(--font-body); color:var(--soft);
+}
+.link.ok{ color:var(--green); }
+.link.danger{ color:var(--red); }
+.icon-btn{
+  width:34px; height:34px; display:grid; place-items:center; border-radius:11px; cursor:pointer;
+  background:rgba(255,255,255,.06); border:1px solid var(--stroke); color:var(--muted);
+}
+.icon-btn:hover{ color:var(--text); }
+.icon-btn.danger:hover{ color:var(--red); }
+
+/* Metrics */
+.metrics{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.metric{ padding:14px; border-radius:20px; }
+.m-val{ display:block; font:600 24px/1.2 var(--font-display); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
+.m-sub{ margin:6px 0 0; font-size:11.5px; line-height:1.35; color:var(--soft); overflow-wrap:anywhere; }
+
+/* Lists */
+.list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.item{
+  display:grid; grid-template-columns:40px minmax(0,1fr) auto 34px; gap:10px; align-items:center;
+  padding:10px; border-radius:16px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08);
+}
+.ico{ width:40px; height:40px; border-radius:13px; display:grid; place-items:center; background:rgba(255,255,255,.07); }
+.ico.pos{ color:var(--green); background:rgba(34,229,139,.12); }
+.ico.neg{ color:var(--red); background:rgba(255,92,122,.12); }
+.item .main{ min-width:0; }
+.item .main b{ display:block; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.item .main small{ display:block; color:var(--muted); font-size:12px; }
+.amt{ font:600 15px var(--font-display); text-align:right; max-width:42vw; overflow-wrap:anywhere; font-variant-numeric:tabular-nums; }
+.amt.pos{ color:var(--green); }
+.amt.neg{ color:var(--red); }
+.empty{ margin:0; padding:14px; text-align:center; color:var(--muted); font-size:13.5px; border:1px dashed var(--stroke); border-radius:16px; list-style:none; }
+.pot{ padding:12px; border-radius:16px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); }
+.pot-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.pot-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500; }
+.pot-amt{ font:600 15px var(--font-display); color:var(--soft); text-align:right; overflow-wrap:anywhere; }
+.pot-actions{ display:flex; gap:18px; margin-top:2px; }
+
+/* Segmented toggle */
+.seg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:16px; background:rgba(0,0,0,.25); border:1px solid var(--stroke); }
+.seg button{
+  border:0; border-radius:12px; padding:11px 8px; cursor:pointer; background:transparent; color:var(--muted);
+  font:600 14px var(--font-display); min-height:44px;
+}
+.seg button[aria-pressed=true]{ background:linear-gradient(135deg,rgba(25,198,255,.9),rgba(123,97,255,.9)); color:#04101f; }
+
+/* Goal */
+.goal-big{ display:block; font:700 34px/1.15 var(--font-display); letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
+.calc-box{ margin-top:14px; padding:14px; border-radius:16px; background:rgba(25,198,255,.08); border:1px solid rgba(25,198,255,.25); }
+.calc-box .eq{ margin:0; overflow-wrap:anywhere; font-size:13.5px; color:var(--soft); }
+.calc-box .res{ margin:4px 0 0; font:600 20px/1.2 var(--font-display); overflow-wrap:anywhere; }
+.track{ position:relative; height:22px; margin:16px 0 14px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); border:1px solid var(--stroke); }
+.fill-real{ position:absolute; top:0; bottom:0; left:0; width:0; background:linear-gradient(90deg,var(--cyan),var(--violet)); transition:width .5s ease; }
+.fill-pot{
+  position:absolute; top:0; bottom:0; left:0; width:0; transition:width .5s ease;
+  background:linear-gradient(90deg,var(--cyan),var(--violet)); opacity:.38;
+}
+.mini-progress{ padding:14px 16px; border-radius:20px; }
+.track.mini{ height:12px; margin:0 0 10px; }
+.mini-legend{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 12px; font-size:12.5px; }
+.mini-a{ font:600 13px var(--font-display); overflow-wrap:anywhere; }
+.mini-b{ color:var(--soft); overflow-wrap:anywhere; }
+.legend{ display:grid; gap:10px; }
+.leg{ display:grid; grid-template-columns:14px minmax(0,1fr) auto; gap:10px; align-items:center; }
+.sw{ width:14px; height:14px; border-radius:5px; }
+.sw.real{ background:linear-gradient(135deg,var(--cyan),var(--violet)); }
+.sw.pot{ background:linear-gradient(135deg,var(--cyan),var(--violet)); opacity:.4; }
+.sw.tot{ background:#fff; opacity:.85; }
+.leg .n{ min-width:0; font-size:13.5px; }
+.leg .v{ text-align:right; overflow-wrap:anywhere; }
+.leg .v b{ display:block; font:600 14.5px var(--font-display); font-variant-numeric:tabular-nums; }
+.leg .v small{ color:var(--muted); font-size:11.5px; }
+.status{ margin:14px 0 0; font-size:13.5px; color:var(--soft); overflow-wrap:anywhere; }
+
+/* Expenses */
+.stepper{ display:grid; grid-template-columns:46px minmax(0,1fr) 46px; gap:10px; align-items:center; }
+.stepper input{ text-align:center; font:600 18px var(--font-display); }
+.stepper .btn{ padding:0; }
+.summary{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.summary .metric.accent{ background:linear-gradient(135deg, rgba(25,198,255,.16), rgba(123,97,255,.2)); border-color:rgba(123,97,255,.4); }
+.dot{ width:12px; height:12px; border-radius:50%; }
+.exp{ display:grid; grid-template-columns:12px minmax(0,1fr) auto 34px 34px; gap:10px; align-items:center; padding:10px 10px 10px 14px; border-radius:16px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); }
+.exp .nm{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:500; }
+.exp.edit{ display:block; padding:12px; }
+.exp.edit .two{ margin-bottom:10px; }
+.bar-row{ margin-bottom:12px; }
+.bar-head{ display:flex; justify-content:space-between; gap:10px; margin-bottom:5px; font-size:13px; }
+.bar-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar-val{ flex:none; max-width:55%; text-align:right; overflow-wrap:anywhere; font-family:var(--font-display); font-weight:600; }
+.bar-track{ height:12px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; }
+.bar-fill{ height:100%; border-radius:999px; transition:width .5s ease; }
+.donut-wrap{ position:relative; width:210px; height:210px; margin:6px auto 20px; }
+.donut-wrap svg{ position:relative; width:100%; height:100%; display:block; overflow:visible; }
+.donut-glass{
+  position:absolute; inset:0; display:grid; place-content:center; text-align:center; padding:0 40px;
+}
+.donut-glass small{ color:var(--muted); font-size:12px; }
+.donut-glass b{ display:block; font:700 20px/1.2 var(--font-display); white-space:nowrap; overflow:hidden; }
+.pie-leg{ display:grid; gap:9px; }
+.pie-leg .leg{ grid-template-columns:12px minmax(0,1fr) auto; }
+.pie-leg .n{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.foot{ display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-top:14px; }
+.foot .link{ color:var(--muted); font-size:12.5px; }
+.note{ text-align:center; color:var(--muted); font-size:11.5px; margin:6px 0 0; }
+
+/* Nav */
+.nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  display:flex; justify-content:center;
+  padding:0 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  pointer-events:none;
+}
+.nav-inner{
+  pointer-events:auto; width:100%; max-width:448px; display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:8px;
+  border-radius:26px; background:rgba(14,22,40,.72); border:1px solid var(--stroke);
+  backdrop-filter:blur(22px) saturate(160%); -webkit-backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+}
+.nav button{
+  display:grid; justify-items:center; gap:4px; padding:9px 4px; border:0; border-radius:18px; cursor:pointer;
+  background:transparent; color:var(--muted); font:500 12px var(--font-body);
+}
+.nav button[aria-current=page]{ background:rgba(25,198,255,.15); color:#fff; box-shadow:inset 0 0 0 1px rgba(25,198,255,.35); }
+
+.toast{
+  position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom, 0px)); transform:translate(-50%, 20px);
+  z-index:30; max-width:calc(100% - 32px); padding:10px 16px; border-radius:14px;
+  background:rgba(20,30,52,.95); border:1px solid var(--stroke); font-size:13.5px; text-align:center;
+  opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; overflow-wrap:anywhere;
+}
+.toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; }
+}
+@media (max-width:360px){
+  .app{ padding-left:12px; padding-right:12px; }
+  .hero-num{ font-size:34px; }
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="app">
+  <header class="top">
+    <div>
+      <p class="greet" id="greet">Hola</p>
+      <h1>Mis finanzas</h1>
+    </div>
+    <div class="pill" id="topPill">
+      <span data-ic="trend" data-size="18"></span>
+      <div><b id="pillVal">—</b><small>de la meta</small></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- AHORRO -->
+    <section id="tab-ahorro" class="stack">
+      <div class="hero">
+        <p class="lbl">Total ahorrado</p>
+        <span class="hero-num" id="heroNum" data-fit data-max="40" data-min="20">$ 0</span>
+        <p class="hero-pot" id="heroPot"></p>
+        <div class="chips"><span class="chip" id="goalChip">Meta sin definir</span><span class="chip ghost" id="modeChip">Meta manual</span></div>
+      </div>
+
+      <div class="card mini-progress">
+        <div class="track mini" id="miniTrack" role="progressbar" aria-label="Progreso del ahorro" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="fill-pot" id="miniPot"></div>
+          <div class="fill-real" id="miniReal"></div>
+        </div>
+        <div class="mini-legend">
+          <span class="mini-a" id="miniA"></span>
+          <span class="mini-b" id="miniB"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Cargar ahorro</h2><span class="sub">Cada carga se suma al total</span></div>
+        <div class="field"><label for="saveAmt">Monto</label><input id="saveAmt" inputmode="decimal" placeholder="Ej: 10.000" data-enter="#btnAdd" autocomplete="off"></div>
+        <div class="field"><label for="saveNote">Nota (opcional)</label><input id="saveNote" placeholder="Ej: Sueldo de septiembre" maxlength="60" data-enter="#btnAdd" autocomplete="off"></div>
+        <p class="err" id="saveErr" role="alert"></p>
+        <div class="row">
+          <button class="btn primary" id="btnAdd" data-act="sav-add">Sumar</button>
+          <button class="btn ghost" data-act="sav-sub">Restar</button>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="card metric"><p class="lbl">Avance de la meta</p><span class="m-val" id="mPct" data-fit data-max="26" data-min="14">—</span><p class="m-sub" id="mPctS"></p></div>
+        <div class="card metric"><p class="lbl">Falta para la meta</p><span class="m-val" id="mMiss" data-fit data-max="26" data-min="14">—</span><p class="m-sub" id="mMissS"></p></div>
+        <div class="card metric"><p class="lbl">Tiempo restante</p><span class="m-val" id="mTime" data-fit data-max="26" data-min="14">—</span><p class="m-sub" id="mTimeS"></p></div>
+        <div class="card metric"><p class="lbl">Ahorro semanal necesario</p><span class="m-val" id="mWeek" data-fit data-max="26" data-min="14">—</span><p class="m-sub" id="mWeekS"></p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Fecha objetivo</h2><span class="sub" id="dateHint"></span></div>
+        <div class="field" style="margin-bottom:10px"><label for="deadline">¿Para cuándo querés llegar a la meta?</label><input type="date" id="deadline"></div>
+        <button class="link" data-act="date-reset">Volver al 15 de enero de 2027</button>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Ingresos potenciales</h2><span class="sub" id="potTotal"></span></div>
+        <p class="sub" style="margin:-4px 0 12px">Plata que todavía no cobraste pero sabés que va a llegar.</p>
+        <div class="field"><label for="potName">Descripción</label><input id="potName" placeholder="Ej: Trabajo freelance" maxlength="60" data-enter="#btnPot" autocomplete="off"></div>
+        <div class="field"><label for="potAmt">Monto</label><input id="potAmt" inputmode="decimal" placeholder="Ej: 50.000" data-enter="#btnPot" autocomplete="off"></div>
+        <p class="err" id="potErr" role="alert"></p>
+        <button class="btn primary" id="btnPot" data-act="pot-add" style="width:100%">Agregar potencial</button>
+        <ul class="list" id="potList" style="margin-top:14px"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Movimientos</h2><span class="sub" id="movHint"></span></div>
+        <ul class="list" id="movList"></ul>
+      </div>
+    </section>
+
+    <!-- META -->
+    <section id="tab-meta" class="stack" hidden>
+      <div class="card">
+        <div class="card-head"><h2>Meta de ahorro</h2></div>
+        <div class="seg" role="group" aria-label="Origen de la meta">
+          <button data-act="mode" data-mode="manual" aria-pressed="true">Monto manual</button>
+          <button data-act="mode" data-mode="expenses" aria-pressed="false">Desde gastos</button>
+        </div>
+
+        <div id="manualPanel" style="margin-top:16px">
+          <div class="field" style="margin-bottom:0"><label for="goalInput">Ahorro objetivo</label><input id="goalInput" inputmode="decimal" placeholder="Ej: 150.000" autocomplete="off"></div>
+        </div>
+
+        <div id="expPanel" style="margin-top:16px" hidden>
+          <div class="calc-box">
+            <p class="eq" id="goalEq"></p>
+            <p class="res" id="goalRes"></p>
+          </div>
+          <button class="link" data-act="tab" data-tab="gastos" style="margin-top:8px">Editar lista de gastos</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="lbl">Meta actual</p>
+        <span class="goal-big" id="goalBig" data-fit data-max="36" data-min="18">$ 0</span>
+        <div class="track" id="track" role="progressbar" aria-label="Avance hacia la meta" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="fill-pot" id="fillPot"></div>
+          <div class="fill-real" id="fillReal"></div>
+        </div>
+        <div class="legend">
+          <div class="leg"><span class="sw real"></span><span class="n">Ahorrado (real)</span><span class="v"><b id="lgReal">$ 0</b><small id="lgRealP"></small></span></div>
+          <div class="leg"><span class="sw pot"></span><span class="n">Ingresos potenciales</span><span class="v"><b id="lgPot">$ 0</b><small id="lgPotP"></small></span></div>
+          <div class="leg"><span class="sw tot"></span><span class="n">Total con potenciales</span><span class="v"><b id="lgTot">$ 0</b><small id="lgTotP"></small></span></div>
+        </div>
+        <p class="status" id="goalStatus"></p>
+      </div>
+    </section>
+
+    <!-- GASTOS -->
+    <section id="tab-gastos" class="stack" hidden>
+      <div class="summary">
+        <div class="card metric"><p class="lbl">Total de gastos</p><span class="m-val" id="xTotal" data-fit data-max="26" data-min="14">$ 0</span><p class="m-sub" id="xCount"></p></div>
+        <div class="card metric accent"><p class="lbl">Por persona</p><span class="m-val" id="xPer" data-fit data-max="26" data-min="14">$ 0</span><p class="m-sub" id="xPerS"></p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Dividir entre</h2><span class="sub">personas</span></div>
+        <div class="stepper">
+          <button class="btn ghost" data-act="ppl-minus" aria-label="Una persona menos"><span data-ic="minus" data-size="20" style="margin:auto"></span></button>
+          <input id="people" inputmode="numeric" aria-label="Cantidad de personas" value="1">
+          <button class="btn ghost" data-act="ppl-plus" aria-label="Una persona más"><span data-ic="plus" data-size="20" style="margin:auto"></span></button>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn ghost small" id="useGoalBtn" data-act="mode" data-mode="expenses" style="width:100%">Usar como meta de ahorro</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Agregar gasto</h2></div>
+        <div class="field"><label for="expName">Concepto</label><input id="expName" placeholder="Ej: Comida" maxlength="60" data-enter="#btnExp" autocomplete="off"></div>
+        <div class="field"><label for="expAmt">Monto</label><input id="expAmt" inputmode="decimal" placeholder="Ej: 100" data-enter="#btnExp" autocomplete="off"></div>
+        <p class="err" id="expErr" role="alert"></p>
+        <button class="btn primary" id="btnExp" data-act="exp-add" style="width:100%">Agregar gasto</button>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Lista de gastos</h2></div>
+        <ul class="list" id="expList"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Gastos por concepto</h2></div>
+        <div id="barChart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Distribución</h2></div>
+        <div id="pieChart"></div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <button class="link" data-act="example">Cargar datos de ejemplo</button>
+      <button class="link" id="resetBtn" data-act="reset">Borrar todos los datos</button>
+    </div>
+    <p class="note">Tus datos se guardan en este navegador.</p>
+  </main>
+</div>
+
+<nav class="nav" aria-label="Secciones">
+  <div class="nav-inner">
+    <button data-act="tab" data-tab="ahorro"><span data-ic="wallet" data-size="22"></span>Ahorro</button>
+    <button data-act="tab" data-tab="meta"><span data-ic="target" data-size="22"></span>Meta</button>
+    <button data-act="tab" data-tab="gastos"><span data-ic="list" data-size="22"></span>Gastos</button>
+  </div>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Constantes y estado ---------- */
+var KEY = 'ahorro-dashboard-v1';
+var DEFAULT_DEADLINE = '2027-01-15';
+var COLORS = ['#19c6ff','#7b61ff','#22e58b','#ffb84d','#ff5c7a','#e879f9','#5eead4','#fb923c'];
+
+function defaults(){
+  return { movements:[], potentials:[], goalMode:'manual', manualGoal:0, deadline:DEFAULT_DEADLINE, expenses:[], people:1, tab:'ahorro' };
+}
+var state = load();
+var editingId = null;
+
+function load(){
+  var d = defaults();
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var p = JSON.parse(raw);
+      Object.keys(d).forEach(function(k){ if(p[k] !== undefined) d[k] = p[k]; });
+    }
+  }catch(e){}
+  if(!Array.isArray(d.movements)) d.movements = [];
+  if(!Array.isArray(d.potentials)) d.potentials = [];
+  if(!Array.isArray(d.expenses)) d.expenses = [];
+  if(!(d.people >= 1)) d.people = 1;
+  if(typeof d.manualGoal !== 'number' || d.manualGoal < 0) d.manualGoal = 0;
+  if(['ahorro','meta','gastos'].indexOf(d.tab) < 0) d.tab = 'ahorro';
+  if(d.goalMode !== 'expenses') d.goalMode = 'manual';
+  return d;
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- Utilidades ---------- */
+function $(s, r){ return (r||document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+var nf = new Intl.NumberFormat('es-AR', { maximumFractionDigits:2, useGrouping:'always' });
+var nf1 = new Intl.NumberFormat('es-AR', { maximumFractionDigits:1, useGrouping:'always' });
+function money(n){ return (n < 0 ? '-' : '') + '$ ' + nf.format(Math.abs(n)); }
+function pct(n){ return nf1.format(n) + '%'; }
+function round2(n){ return Math.round(n * 100) / 100; }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function sum(arr){ return arr.reduce(function(a,b){ return a + (b.amount || 0); }, 0); }
+
+function parseAmt(s){
+  if(s == null) return NaN;
+  s = String(s).trim().replace(/[\s$]/g,'');
+  if(!s) return NaN;
+  var dots = (s.match(/\./g)||[]).length, coms = (s.match(/,/g)||[]).length;
+  if(dots && coms){ s = s.replace(/\./g,'').replace(',','.'); }
+  else if(coms > 1){ s = s.replace(/,/g,''); }
+  else if(coms === 1){ s = s.replace(',','.'); }
+  else if(dots){ if(/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,''); }
+  if(!/^\d+(\.\d+)?$/.test(s)) return NaN;
+  return round2(parseFloat(s));
+}
+function toInput(n){ return n ? String(n).replace('.', ',') : ''; }
+
+/* ---------- Iconos ---------- */
+var P = {
+  wallet:'<path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3"/><path d="M21 10h-4a2 2 0 0 0 0 4h4z"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  trash:'<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>',
+  pencil:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  up:'<path d="M12 19V5M6 11l6-6 6 6"/>',
+  down:'<path d="M12 5v14M6 13l6 6 6-6"/>',
+  trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  minus:'<path d="M5 12h14"/>'
+};
+function ic(name, size){
+  size = size || 20;
+  return '<svg class="ic" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[name]+'</svg>';
+}
+
+/* ---------- Cálculos ---------- */
+function totalExp(){ return sum(state.expenses); }
+function perPerson(){ return state.people > 0 ? totalExp() / state.people : 0; }
+function goalValue(){ return state.goalMode === 'expenses' ? perPerson() : state.manualGoal; }
+
+function parseDate(s){
+  if(!s) return null;
+  var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if(!m) return null;
+  return new Date(+m[1], +m[2]-1, +m[3]);
+}
+function calc(){
+  var saved = Math.max(sum(state.movements), 0);
+  var pot = sum(state.potentials);
+  var withPot = saved + pot;
+  var goal = goalValue();
+  var t = new Date(); t = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  var dl = parseDate(state.deadline);
+  var days = dl ? Math.round((dl - t) / 86400000) : null;
+  var missing = Math.max(goal - saved, 0);
+  var missingPot = Math.max(goal - withPot, 0);
+  var weeks = days != null && days > 0 ? days / 7 : null;
+  var div = weeks != null ? Math.max(weeks, 1) : 1;
+  return {
+    saved:saved, pot:pot, withPot:withPot, goal:goal,
+    pct: goal > 0 ? saved / goal * 100 : null,
+    pctPot: goal > 0 ? withPot / goal * 100 : null,
+    missing:missing, missingPot:missingPot,
+    days:days, weeks:weeks,
+    weekly: missing / div, weeklyPot: missingPot / div
+  };
+}
+
+/* ---------- Render ---------- */
+function fit(el){
+  if(!el || el.offsetParent === null) return;
+  var max = +el.dataset.max || 24, min = +el.dataset.min || 12, s = max;
+  el.style.fontSize = s + 'px';
+  while(el.scrollWidth > el.clientWidth && s > min){ s -= 1; el.style.fontSize = s + 'px'; }
+}
+function fitAll(){ $$('[data-fit]').forEach(fit); }
+
+function renderTabs(){
+  ['ahorro','meta','gastos'].forEach(function(t){ $('#tab-'+t).hidden = state.tab !== t; });
+  $$('.nav button').forEach(function(b){
+    if(b.dataset.tab === state.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
+  });
+}
+
+function greeting(){
+  var h = new Date().getHours();
+  return h < 6 ? 'Buenas noches' : h < 13 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+}
+
+function renderSavings(){
+  var c = calc();
+  $('#greet').textContent = greeting();
+  $('#pillVal').textContent = c.goal > 0 ? pct(c.pct) : '—';
+
+  $('#heroNum').textContent = money(c.saved);
+  $('#heroPot').innerHTML = c.pot > 0 ? 'Con potenciales <b>' + esc(money(c.withPot)) + '</b>' : 'Sin ingresos potenciales cargados';
+  $('#goalChip').textContent = c.goal > 0 ? 'Meta ' + money(c.goal) : 'Meta sin definir';
+  $('#modeChip').textContent = state.goalMode === 'expenses' ? 'Desde gastos' : 'Meta manual';
+
+  var mReal = c.goal > 0 ? Math.min(c.saved / c.goal * 100, 100) : 0;
+  var mTot = c.goal > 0 ? Math.min(c.withPot / c.goal * 100, 100) : 0;
+  $('#miniReal').style.width = mReal + '%';
+  $('#miniPot').style.width = mTot + '%';
+  $('#miniTrack').setAttribute('aria-valuenow', String(Math.round(mReal)));
+  if(c.goal > 0){
+    $('#miniA').textContent = pct(c.pct) + ' ahorrado';
+    $('#miniB').textContent = c.pot > 0 ? 'con potenciales: ' + pct(c.pctPot) : 'de ' + money(c.goal);
+  }else{
+    $('#miniA').textContent = 'Sin meta definida';
+    $('#miniB').textContent = 'Definila en la pestaña Meta';
+  }
+
+  if(c.goal > 0){
+    $('#mPct').textContent = pct(c.pct);
+    $('#mPctS').textContent = 'con potenciales: ' + pct(c.pctPot);
+    $('#mMiss').textContent = money(c.missing);
+    $('#mMissS').textContent = 'con potenciales: ' + money(c.missingPot);
+  }else{
+    $('#mPct').textContent = '—'; $('#mPctS').textContent = 'Definí una meta en la pestaña Meta';
+    $('#mMiss').textContent = '—'; $('#mMissS').textContent = 'Definí una meta en la pestaña Meta';
+  }
+
+  var tv, ts;
+  if(c.days == null){ tv = '—'; ts = 'Elegí una fecha objetivo'; }
+  else if(c.days > 1){ tv = c.days + ' días'; ts = '≈ ' + nf1.format(c.days/7) + ' semanas'; }
+  else if(c.days === 1){ tv = '1 día'; ts = 'Es mañana'; }
+  else if(c.days === 0){ tv = 'Hoy'; ts = 'Es la fecha objetivo'; }
+  else { tv = 'Vencida'; ts = 'Hace ' + Math.abs(c.days) + (Math.abs(c.days) === 1 ? ' día' : ' días'); }
+  $('#mTime').textContent = tv; $('#mTimeS').textContent = ts;
+  $('#dateHint').textContent = c.days != null && c.days > 0 ? 'Faltan ' + c.days + ' días' : '';
+
+  if(c.goal > 0 && c.days != null){
+    $('#mWeek').textContent = money(Math.ceil(c.weekly)) + ' /sem';
+    $('#mWeekS').textContent = c.days <= 0 ? 'La fecha ya pasó: es el total que falta'
+      : 'con potenciales: ' + money(Math.ceil(c.weeklyPot)) + ' /sem';
+  }else{
+    $('#mWeek').textContent = '—';
+    $('#mWeekS').textContent = c.goal > 0 ? 'Elegí una fecha objetivo' : 'Definí una meta y una fecha';
+  }
+
+  $('#potTotal').textContent = state.potentials.length ? 'Total ' + money(c.pot) : '';
+  $('#potList').innerHTML = state.potentials.length ? state.potentials.map(function(p){
+    return '<li class="pot"><div class="pot-top"><span class="pot-name">'+esc(p.note)+'</span><span class="pot-amt">+'+esc(money(p.amount))+'</span></div>'+
+      '<div class="pot-actions"><button class="link ok" data-act="pot-paid" data-id="'+p.id+'">Marcar como cobrado</button><button class="link danger" data-act="pot-del" data-id="'+p.id+'">Eliminar</button></div></li>';
+  }).join('') : '<li class="empty">Todavía no cargaste ingresos potenciales.</li>';
+
+  var movs = state.movements.slice(0, 8);
+  $('#movHint').textContent = state.movements.length > 8 ? 'Últimos 8 de ' + state.movements.length : '';
+  $('#movList').innerHTML = movs.length ? movs.map(function(m){
+    var pos = m.amount >= 0, d = new Date(m.ts);
+    var when = d.toLocaleDateString('es-AR', {day:'numeric', month:'short'}) + ' · ' + d.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+    return '<li class="item"><span class="ico '+(pos?'pos':'neg')+'">'+ic(pos?'up':'down',20)+'</span>'+
+      '<div class="main"><b>'+esc(m.note || (pos ? 'Ahorro' : 'Retiro'))+'</b><small>'+esc(when)+'</small></div>'+
+      '<span class="amt '+(pos?'pos':'neg')+'">'+(pos?'+':'-')+esc(money(Math.abs(m.amount)))+'</span>'+
+      '<button class="icon-btn danger" data-act="mov-del" data-id="'+m.id+'" aria-label="Eliminar movimiento">'+ic('trash',16)+'</button></li>';
+  }).join('') : '<li class="empty">Cargá tu primer ahorro para empezar.</li>';
+}
+
+function renderGoal(){
+  var c = calc();
+  $$('[data-act=mode]', $('#tab-meta')).forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mode === state.goalMode)); });
+  $('#manualPanel').hidden = state.goalMode !== 'manual';
+  $('#expPanel').hidden = state.goalMode !== 'expenses';
+  $('#goalEq').textContent = 'Gastos ' + money(totalExp()) + ' ÷ ' + state.people + (state.people === 1 ? ' persona' : ' personas');
+  $('#goalRes').textContent = 'Meta por persona: ' + money(perPerson());
+
+  $('#goalBig').textContent = c.goal > 0 ? money(c.goal) : '$ 0';
+
+  var real = c.goal > 0 ? Math.min(c.saved / c.goal * 100, 100) : 0;
+  var tot = c.goal > 0 ? Math.min(c.withPot / c.goal * 100, 100) : 0;
+  $('#fillReal').style.width = real + '%';
+  $('#fillPot').style.width = tot + '%';
+  $('#track').setAttribute('aria-valuenow', String(Math.round(real)));
+
+  $('#lgReal').textContent = money(c.saved);
+  $('#lgPot').textContent = money(c.pot);
+  $('#lgTot').textContent = money(c.withPot);
+  $('#lgRealP').textContent = c.goal > 0 ? pct(c.saved / c.goal * 100) + ' de la meta' : '';
+  $('#lgPotP').textContent = c.goal > 0 ? pct(c.pot / c.goal * 100) + ' de la meta' : '';
+  $('#lgTotP').textContent = c.goal > 0 ? pct(c.withPot / c.goal * 100) + ' de la meta' : '';
+
+  var st;
+  if(c.goal <= 0) st = 'Definí una meta para ver cuánto llevás.';
+  else if(c.saved >= c.goal) st = '¡Meta alcanzada! Ya juntaste todo el ahorro objetivo.';
+  else if(c.withPot >= c.goal) st = 'Cuando cobres los ingresos potenciales, vas a llegar a la meta.';
+  else st = 'Te faltan ' + money(c.missing) + ' (' + money(c.missingPot) + ' si cobrás los potenciales).';
+  $('#goalStatus').textContent = st;
+}
+
+function renderExpenses(){
+  var total = totalExp(), per = perPerson(), n = state.expenses.length;
+  $('#xTotal').textContent = money(total);
+  $('#xCount').textContent = n + (n === 1 ? ' gasto' : ' gastos');
+  $('#xPer').textContent = money(per);
+  $('#xPerS').textContent = money(total) + ' ÷ ' + state.people + (state.people === 1 ? ' persona' : ' personas');
+
+  var btn = $('#useGoalBtn');
+  if(state.goalMode === 'expenses'){ btn.textContent = 'Este monto es tu meta de ahorro'; btn.disabled = true; btn.style.opacity = .7; }
+  else { btn.textContent = 'Usar como meta de ahorro'; btn.disabled = false; btn.style.opacity = 1; }
+
+  $('#expList').innerHTML = n ? state.expenses.map(function(e, i){
+    if(e.id === editingId){
+      return '<li class="exp edit" data-id="'+e.id+'"><div class="two"><input class="e-name" value="'+esc(e.name)+'" maxlength="60" aria-label="Concepto"><input class="e-amt" inputmode="decimal" value="'+esc(toInput(e.amount))+'" aria-label="Monto"></div>'+
+        '<div class="row"><button class="btn primary small" data-act="exp-save" data-id="'+e.id+'">Guardar</button><button class="btn ghost small" data-act="exp-cancel">Cancelar</button></div></li>';
+    }
+    return '<li class="exp"><span class="dot" style="background:'+COLORS[i % COLORS.length]+'"></span><span class="nm">'+esc(e.name)+'</span><span class="amt">'+esc(money(e.amount))+'</span>'+
+      '<button class="icon-btn" data-act="exp-edit" data-id="'+e.id+'" aria-label="Editar '+esc(e.name)+'">'+ic('pencil',16)+'</button>'+
+      '<button class="icon-btn danger" data-act="exp-del" data-id="'+e.id+'" aria-label="Eliminar '+esc(e.name)+'">'+ic('trash',16)+'</button></li>';
+  }).join('') : '<li class="empty">Agregá gastos para calcular el total y la parte de cada persona.</li>';
+
+  var items = state.expenses.map(function(e, i){ return { name:e.name, amount:e.amount, color:COLORS[i % COLORS.length] }; })
+    .filter(function(e){ return e.amount > 0; })
+    .sort(function(a,b){ return b.amount - a.amount; });
+  var sumItems = items.reduce(function(a,b){ return a + b.amount; }, 0);
+
+  if(!items.length){
+    $('#barChart').innerHTML = '<p class="empty">Los gráficos aparecen cuando cargás gastos.</p>';
+    $('#pieChart').innerHTML = '<p class="empty">Los gráficos aparecen cuando cargás gastos.</p>';
+    return;
+  }
+  var maxAmt = items[0].amount;
+  $('#barChart').innerHTML = items.map(function(it){
+    return '<div class="bar-row"><div class="bar-head"><span class="bar-name">'+esc(it.name)+'</span><span class="bar-val">'+esc(money(it.amount))+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+(it.amount/maxAmt*100)+'%;background:'+it.color+'"></div></div></div>';
+  }).join('');
+
+  var r = 48, sw = 7, C = 2 * Math.PI * r, off = 0, GAP = 10;
+  var many = items.length > 1;
+  var slices = items.map(function(it){
+    var len = it.amount / sumItems * C, seg, start;
+    if(many){ seg = Math.max(len - GAP, 0.01); start = off + GAP / 2; }
+    else { seg = C; start = 0; }
+    var el = '<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="'+it.color+'" stroke-width="'+sw+'" stroke-linecap="'+(many ? 'round' : 'butt')+'" stroke-dasharray="'+seg+' '+(C-seg)+'" stroke-dashoffset="'+(-start)+'" transform="rotate(-90 60 60)"/>';
+    off += len; return el;
+  }).join('');
+  $('#pieChart').innerHTML =
+    '<div class="donut-wrap"><svg viewBox="0 0 120 120" role="img" aria-label="Distribución de gastos"><circle cx="60" cy="60" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="'+sw+'"/>'+slices+'</svg>'+
+    '<div class="donut-glass"><small>Total</small><b data-fit data-max="20" data-min="10">'+esc(money(sumItems))+'</b></div></div>'+
+    '<div class="pie-leg">'+items.map(function(it){
+      return '<div class="leg"><span class="dot" style="background:'+it.color+'"></span><span class="n">'+esc(it.name)+'</span><span class="v"><b>'+esc(money(it.amount))+'</b><small>'+pct(it.amount/sumItems*100)+'</small></span></div>';
+    }).join('')+'</div>';
+}
+
+function renderAll(){
+  renderTabs(); renderSavings(); renderGoal(); renderExpenses();
+  requestAnimationFrame(fitAll);
+}
+function syncInputs(){
+  $('#deadline').value = state.deadline || '';
+  $('#goalInput').value = toInput(state.manualGoal);
+  $('#people').value = state.people;
+}
+
+/* ---------- Toast ---------- */
+var toastTimer;
+function toast(msg){
+  var t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+/* ---------- Acciones ---------- */
+function commit(){ save(); renderAll(); }
+
+function addSaving(sign){
+  var inp = $('#saveAmt'), err = $('#saveErr'), amt = parseAmt(inp.value);
+  if(!(amt > 0)){ err.textContent = 'Ingresá un monto mayor a 0.'; inp.focus(); return; }
+  if(sign < 0 && amt > calc().saved + 0.001){ err.textContent = 'No podés restar más de lo que tenés ahorrado.'; inp.focus(); return; }
+  err.textContent = '';
+  state.movements.unshift({ id:uid(), amount:sign * amt, note:$('#saveNote').value.trim().slice(0,60), ts:Date.now() });
+  inp.value = ''; $('#saveNote').value = '';
+  commit();
+  toast(sign > 0 ? 'Sumaste ' + money(amt) : 'Restaste ' + money(amt));
+}
+function addPot(){
+  var amt = parseAmt($('#potAmt').value), err = $('#potErr');
+  if(!(amt > 0)){ err.textContent = 'Ingresá un monto mayor a 0.'; $('#potAmt').focus(); return; }
+  err.textContent = '';
+  state.potentials.push({ id:uid(), amount:amt, note:$('#potName').value.trim().slice(0,60) || 'Ingreso potencial' });
+  $('#potAmt').value = ''; $('#potName').value = '';
+  commit(); toast('Potencial agregado');
+}
+function addExp(){
+  var amt = parseAmt($('#expAmt').value), err = $('#expErr');
+  if(!(amt > 0)){ err.textContent = 'Ingresá un monto mayor a 0.'; $('#expAmt').focus(); return; }
+  err.textContent = '';
+  state.expenses.push({ id:uid(), amount:amt, name:$('#expName').value.trim().slice(0,60) || 'Gasto' });
+  $('#expAmt').value = ''; $('#expName').value = '';
+  commit(); toast('Gasto agregado');
+}
+function setPeople(n){
+  n = Math.floor(n); if(!(n >= 1)) n = 1; if(n > 99) n = 99;
+  state.people = n; $('#people').value = n; commit();
+}
+function setTab(t){ state.tab = t; save(); renderAll(); window.scrollTo(0, 0); }
+
+function example(){
+  var now = Date.now(), day = 86400000;
+  state.movements = [
+    { id:uid(), amount:30000, note:'Ahorro de septiembre', ts:now - 2*day },
+    { id:uid(), amount:45000, note:'Venta de usados', ts:now - 9*day },
+    { id:uid(), amount:25000, note:'Sueldo', ts:now - 16*day }
+  ];
+  state.potentials = [ { id:uid(), amount:60000, note:'Trabajo freelance' }, { id:uid(), amount:20000, note:'Reintegro' } ];
+  state.expenses = [
+    { id:uid(), name:'Comida', amount:90000 }, { id:uid(), name:'Nafta', amount:60000 },
+    { id:uid(), name:'Alquiler de cabaña', amount:240000 }, { id:uid(), name:'Entradas', amount:45000 }
+  ];
+  state.people = 4; state.goalMode = 'expenses'; state.deadline = DEFAULT_DEADLINE;
+  syncInputs(); commit(); toast('Datos de ejemplo cargados');
+}
+
+var resetTimer, resetArmed = false;
+function resetAll(){
+  var b = $('#resetBtn');
+  if(!resetArmed){
+    resetArmed = true; b.textContent = 'Tocá de nuevo para confirmar';
+    resetTimer = setTimeout(function(){ resetArmed = false; b.textContent = 'Borrar todos los datos'; }, 4000);
+    return;
+  }
+  clearTimeout(resetTimer); resetArmed = false; b.textContent = 'Borrar todos los datos';
+  var tab = state.tab; state = defaults(); state.tab = tab; editingId = null;
+  syncInputs(); commit(); toast('Datos borrados');
+}
+
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-act]'); if(!t) return;
+  var act = t.dataset.act, id = t.dataset.id;
+  switch(act){
+    case 'tab': setTab(t.dataset.tab); break;
+    case 'sav-add': addSaving(1); break;
+    case 'sav-sub': addSaving(-1); break;
+    case 'date-reset': state.deadline = DEFAULT_DEADLINE; syncInputs(); commit(); break;
+    case 'pot-add': addPot(); break;
+    case 'pot-del': state.potentials = state.potentials.filter(function(p){ return p.id !== id; }); commit(); break;
+    case 'pot-paid':
+      var p = state.potentials.filter(function(x){ return x.id === id; })[0];
+      if(p){
+        state.potentials = state.potentials.filter(function(x){ return x.id !== id; });
+        state.movements.unshift({ id:uid(), amount:p.amount, note:p.note + ' (cobrado)', ts:Date.now() });
+        commit(); toast('Se sumó a tu ahorro real');
+      }
+      break;
+    case 'mov-del': state.movements = state.movements.filter(function(m){ return m.id !== id; }); commit(); break;
+    case 'mode': state.goalMode = t.dataset.mode; syncInputs(); commit(); break;
+    case 'ppl-minus': setPeople(state.people - 1); break;
+    case 'ppl-plus': setPeople(state.people + 1); break;
+    case 'exp-add': addExp(); break;
+    case 'exp-edit': editingId = id; renderExpenses(); requestAnimationFrame(fitAll); break;
+    case 'exp-cancel': editingId = null; renderExpenses(); requestAnimationFrame(fitAll); break;
+    case 'exp-save':
+      var row = t.closest('.exp'), amt = parseAmt($('.e-amt', row).value);
+      if(!(amt > 0)){ $('.e-amt', row).focus(); toast('Ingresá un monto mayor a 0'); break; }
+      state.expenses.forEach(function(x){ if(x.id === id){ x.amount = amt; x.name = $('.e-name', row).value.trim().slice(0,60) || 'Gasto'; } });
+      editingId = null; commit(); break;
+    case 'exp-del': state.expenses = state.expenses.filter(function(x){ return x.id !== id; }); if(editingId === id) editingId = null; commit(); break;
+    case 'example': example(); break;
+    case 'reset': resetAll(); break;
+  }
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  var t = e.target;
+  if(t.dataset && t.dataset.enter){ e.preventDefault(); $(t.dataset.enter).click(); }
+  else if(t.classList && (t.classList.contains('e-name') || t.classList.contains('e-amt'))){
+    e.preventDefault(); var b = $('[data-act=exp-save]', t.closest('.exp')); if(b) b.click();
+  }
+});
+
+$('#goalInput').addEventListener('input', function(){
+  var v = parseAmt(this.value); state.manualGoal = isNaN(v) ? 0 : v; save();
+  renderSavings(); renderGoal(); renderExpenses(); requestAnimationFrame(fitAll);
+});
+$('#deadline').addEventListener('change', function(){ state.deadline = this.value; commit(); });
+$('#people').addEventListener('input', function(){
+  var n = parseInt(this.value, 10);
+  if(n >= 1){ state.people = Math.min(n, 99); save(); renderAll(); }
+});
+$('#people').addEventListener('change', function(){ this.value = state.people; });
+window.addEventListener('resize', fitAll);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
+
+/* ---------- Inicio ---------- */
+$$('[data-ic]').forEach(function(el){ el.innerHTML = ic(el.dataset.ic, +el.dataset.size || 22); });
+syncInputs();
+renderAll();
+})();
+</script>
+</body>
+</html>
